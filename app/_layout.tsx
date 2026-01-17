@@ -1,33 +1,43 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
-
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
+import { Stack } from "expo-router"
+import { useColorScheme } from "react-native"
+import { TamaguiProvider, Theme, useTheme } from "tamagui"
+import { config } from "../tamagui.config"
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+  const colorScheme = useColorScheme()
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <TamaguiProvider config={config} defaultTheme={colorScheme === "dark" ? "dark" : "light"}>
+      <Theme name={colorScheme === "dark" ? "dark" : "light"}>
+        <ThemeBasedThemeProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              statusBarStyle: colorScheme === "dark" ? "light" : "dark",
+            }}
+          />
+        </ThemeBasedThemeProvider>
+      </Theme>
+    </TamaguiProvider>
+  )
+}
+
+function ThemeBasedThemeProvider({ children }: { children: React.ReactNode }) {
+  const theme = useTheme()
+  const colorScheme = useColorScheme()
+
+  const navigationTheme = {
+    ...(colorScheme === "dark" ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(colorScheme === "dark" ? DarkTheme.colors : DefaultTheme.colors),
+      background: theme.background.get(),
+      card: theme.background.get(),
+      text: theme.color.get(),
+      primary: theme.blue10?.get() || theme.color.get(),
+      border: theme.borderColor?.get() || "transparent",
+    },
+  }
+
+  return <ThemeProvider value={navigationTheme}>{children}</ThemeProvider>
 }
