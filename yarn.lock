@@ -1408,6 +1408,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dev-plugins/react-query@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@dev-plugins/react-query@npm:0.4.0"
+  dependencies:
+    flatted: "npm:^3.3.1"
+  peerDependencies:
+    "@tanstack/react-query": "*"
+    expo: ">=53.0.5"
+    react: "*"
+  checksum: 10c0/9a0d32a3bf0d53c3c710ac63c59394bc77713bca9e852fd689c4935025727f427aa29bada5f8a5b8eae57e64bab58942bae83ba02a3049ce60ab339be65f4c4e
+  languageName: node
+  linkType: hard
+
 "@egjs/hammerjs@npm:^2.0.17":
   version: 2.0.17
   resolution: "@egjs/hammerjs@npm:2.0.17"
@@ -4898,6 +4911,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.90.19":
+  version: 5.90.19
+  resolution: "@tanstack/query-core@npm:5.90.19"
+  checksum: 10c0/f6974064238d94025cd1fb8e9ba6a1ffb90d137e0d3fb6949252e81032ae446e948073ea999a4d11e1b6000df7eeec15cda92b76a264249f091f7543a192e958
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.90.19":
+  version: 5.90.19
+  resolution: "@tanstack/react-query@npm:5.90.19"
+  dependencies:
+    "@tanstack/query-core": "npm:5.90.19"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10c0/5176a363855c9ce87e6b7fe034ee9538766b209fea561c1f8e9aadbca1891d0d03fe3b28ccf79fc2077ba9d77a89aab59ca8b66b00f12519e207b24f47868554
+  languageName: node
+  linkType: hard
+
 "@tybys/wasm-util@npm:^0.10.0":
   version: 0.10.0
   resolution: "@tybys/wasm-util@npm:0.10.0"
@@ -7988,7 +8019,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flatted@npm:^3.2.9":
+"flatted@npm:^3.2.9, flatted@npm:^3.3.1":
   version: 3.3.3
   resolution: "flatted@npm:3.3.3"
   checksum: 10c0/e957a1c6b0254aa15b8cce8533e24165abd98fadc98575db082b786b5da1b7d72062b81bfdcd1da2f4d46b6ed93bec2434e62333e9b4261d79ef2e75a10dd538
@@ -10013,6 +10044,7 @@ __metadata:
   resolution: "music-rec@workspace:."
   dependencies:
     "@babel/core": "npm:^7.26.0"
+    "@dev-plugins/react-query": "npm:^0.4.0"
     "@expo/vector-icons": "npm:^15.0.3"
     "@react-navigation/bottom-tabs": "npm:^7.3.10"
     "@react-navigation/elements": "npm:^2.3.8"
@@ -10024,6 +10056,7 @@ __metadata:
     "@tamagui/lucide-icons": "npm:^1.144.2"
     "@tamagui/metro-plugin": "npm:^1.144.2"
     "@tamagui/themes": "npm:^1.144.2"
+    "@tanstack/react-query": "npm:^5.90.19"
     "@types/react": "npm:~19.1.10"
     "@typescript-eslint/eslint-plugin": "npm:^8.37.0"
     "@typescript-eslint/parser": "npm:^8.37.0"

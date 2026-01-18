@@ -3,23 +3,28 @@ import { Stack } from "expo-router"
 import { useColorScheme } from "react-native"
 import { TamaguiProvider, Theme, useTheme } from "tamagui"
 import { config } from "../tamagui.config"
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
+  const queryClient = new QueryClient()
 
   return (
-    <TamaguiProvider config={config} defaultTheme={colorScheme === "dark" ? "dark" : "light"}>
-      <Theme name={colorScheme === "dark" ? "dark" : "light"}>
-        <ThemeBasedThemeProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              statusBarStyle: colorScheme === "dark" ? "light" : "dark",
-            }}
-          />
-        </ThemeBasedThemeProvider>
-      </Theme>
-    </TamaguiProvider>
+    <QueryClientProvider client={queryClient}>
+      <TamaguiProvider config={config} defaultTheme={colorScheme === "dark" ? "dark" : "light"}>
+        <Theme name={colorScheme === "dark" ? "dark" : "light"}>
+          <ThemeBasedThemeProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                statusBarStyle: colorScheme === "dark" ? "light" : "dark",
+              }}
+            />
+          </ThemeBasedThemeProvider>
+        </Theme>
+      </TamaguiProvider>
+    </QueryClientProvider>
+
   )
 }
 
