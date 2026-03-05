@@ -40,3 +40,5 @@ yarn-error.*
 .tamagui/
 
 app-example
+.env
+.env.local
