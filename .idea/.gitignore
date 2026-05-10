@@ -1,3 +1,23 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+# Native generated folders from Expo prebuild
+/android
+/ios
+
+# Android local config
+android/local.properties
+
+# IDE
+.idea/
+
+# Yarn
+.yarn/install-state.gz
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
