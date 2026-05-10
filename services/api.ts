@@ -1,6 +1,7 @@
-import axios, { type AxiosResponse } from "axios"
+import { useSpotifyStore } from "@/store/app"
+import axios from "axios"
 
-const api = axios.create({
+export const api = axios.create({
 	baseURL:
 		process.env.EXPO_PUBLIC_API_URL ??
 		(() => {
@@ -12,9 +13,15 @@ const api = axios.create({
 	},
 	withCredentials: false
 })
-//Logs request
+
 api.interceptors.request.use(
 	async (config) => {
+		const accessToken = useSpotifyStore.getState().accessToken
+
+		if (accessToken) {
+			config.headers.Authorization = `Bearer ${accessToken}`
+		}
+
 		console.log("🚀 Request:", {
 			method: config.method,
 			url: config.url,
@@ -27,26 +34,3 @@ api.interceptors.request.use(
 	},
 	(error) => Promise.reject(error)
 )
-
-//Logs response
-api.interceptors.response.use(
-	(response: AxiosResponse) => {
-		console.log("✅ Response:", {
-			url: response.config.url,
-			status: response.status,
-			data: response.data
-		})
-		return response
-	},
-	async (error) => {
-		console.log("❌ Response Error:", {
-			url: error.config?.url,
-			status: error.response?.status,
-			message: error.message,
-			data: error.response?.data
-		})
-		return Promise.reject(error)
-	}
-)
-
-export default api

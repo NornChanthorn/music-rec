@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { useSpotifyStore } from "@/store/app"
 import * as AuthSession from "expo-auth-session"
 import * as WebBrowser from "expo-web-browser"
-import Constants from "expo-constants"
+import { useEffect, useMemo, useState } from "react"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { Button, ScrollView, Text, YStack } from "tamagui"
 
 WebBrowser.maybeCompleteAuthSession()
@@ -20,24 +20,33 @@ type SpotifyPlaylist = {
 }
 
 export default function TabTwoScreen() {
-	const [accessToken, setAccessToken] = useState<string | null>(null)
+    const { accessToken, setAccessToken } = useSpotifyStore()
 	const [playlists, setPlaylists] = useState<SpotifyPlaylist[]>([])
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 
 	const clientId = process.env.EXPO_PUBLIC_SPOTIFY_CLIENT_ID
-	const isExpoGo =
-		Constants.appOwnership === "expo" ||
-		Constants.executionEnvironment === "storeClient"
 	const redirectUri = useMemo(
-		() => AuthSession.makeRedirectUri({ scheme: "musicrec", useProxy: isExpoGo }),
-		[isExpoGo]
+		() =>
+			AuthSession.makeRedirectUri({
+				scheme: "musicrec",
+				path: "callback",
+			}),
+		[]
 	)
+	console.log("redirect uri: ", redirectUri)
 
 	const [request, response, promptAsync] = AuthSession.useAuthRequest(
 		{
 			clientId: clientId ?? "",
-			scopes: ["playlist-read-private", "playlist-read-collaborative"],
+			scopes: [
+				"user-read-email",
+				"user-read-private",
+				"user-top-read",
+				"user-read-recently-played",
+				"playlist-read-private",
+				"playlist-read-collaborative",
+			],
 			redirectUri,
 			usePKCE: true
 		},
@@ -51,6 +60,8 @@ export default function TabTwoScreen() {
 			return
 		}
 
+		console.log("redirect url: ", redirectUri)
+
 		const exchange = async () => {
 			try {
 				const token = await AuthSession.exchangeCodeAsync(
@@ -58,7 +69,7 @@ export default function TabTwoScreen() {
 						clientId,
 						code: response.params.code,
 						redirectUri,
-						extraParams: { code_verifier: request.codeVerifier }
+						extraParams: { code_verifier: request.codeVerifier! }
 					},
 					spotifyDiscovery
 				)
@@ -73,6 +84,7 @@ export default function TabTwoScreen() {
 	}, [clientId, redirectUri, request?.codeVerifier, response])
 
 	const fetchPlaylists = async () => {
+		console.log("accessToken", accessToken)
 		if (!accessToken) return
 		setLoading(true)
 		setError(null)
@@ -83,12 +95,14 @@ export default function TabTwoScreen() {
 					headers: { Authorization: `Bearer ${accessToken}` }
 				}
 			)
+			console.log("res fron fetch playlist: ", res)
 			if (!res.ok) {
 				throw new Error(`Spotify error: ${res.status}`)
 			}
 			const data = await res.json()
 			setPlaylists(data.items ?? [])
 		} catch (err) {
+			console.log("err from fetch playlist: ", err)
 			setError("Failed to load playlists.")
 		} finally {
 			setLoading(false)
@@ -112,18 +126,21 @@ export default function TabTwoScreen() {
 					)}
 					<Button
 						disabled={!request || !clientId}
-						onPress={() => promptAsync({ useProxy: isExpoGo })}
+						onPress={() => promptAsync()}
 					>
 						Connect Spotify
 					</Button>
 					<Text fontSize={12} color="$gray10">
 						Redirect URI: {redirectUri}
 					</Text>
-					<Button
+					{/* <Button
 						disabled={!accessToken || loading}
 						onPress={fetchPlaylists}
 					>
 						{loading ? "Loading..." : "Load Playlists"}
+					</Button> */}
+					<Button onPress={fetchPlaylists}>
+						Get PlayList from  Spotify
 					</Button>
 					{error && <Text color="$red10">{error}</Text>}
 					{playlists.length > 0 && (
