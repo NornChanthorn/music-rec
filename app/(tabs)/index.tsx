@@ -1,8 +1,21 @@
 
+import { useSpotifyStore } from "@/store/app";
+import { useRouter } from "expo-router";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context"
-import { Avatar, Text, YStack } from "tamagui"
+import { Avatar, Button, Text, YStack } from "tamagui"
 
 export default function HomeScreen() {
+  const { accessToken } = useSpotifyStore();
+  const router = useRouter();
+  if (!accessToken) {
+    return (
+      <View>
+        <View>Please login to continue</View>
+        <Button onPress={() => router.push('/(auth)/login')}>Login</Button>
+      </View>
+    )
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }} >
